@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TinyApp</title>
+</head>
+<header>
+    <% include ./partials/_header %>
+</header>
+<body>
+    <!-- Add your EJS code here -->
+    <% for (var ewerl in urls) { %>
+  <li><a href="<%=urls[ewerl]%>"> <%= ewerl %> : <%= urls[ewerl] %></a></li>
+  <% } %>
+</body>
+</html>
