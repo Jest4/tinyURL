@@ -4,12 +4,12 @@
     <title>TinyApp</title>
 </head>
 <header>
-    <% include ./partials/_header %>
+    <% include partials/_header %>
 </header>
 <body>
     <!-- Add your EJS code here -->
-    <% for (var ewerl in urls) { %>
-  <li><a href="<%=urls[ewerl]%>"> <%= ewerl %> : <%= urls[ewerl] %></a></li>
+    <% for (var shortURL in urls) { %>
+  <li><a href="<%=`/urls/${shortURL}`%>"> <%= shortURL %> : <%= urls[shortURL] %></a></li>
   <% } %>
 </body>
 </html>

@@ -57,7 +57,11 @@ app.get("/hello", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let newURL = generateRandomString()
+  if (req.body.longURL.includes("http://")) {
   urlDatabase[newURL] = req.body.longURL
+} else {
+  urlDatabase[newURL] = "http://" + req.body.longURL
+}
   console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
   res.redirect("urls/" + newURL);         // Respond with 'Ok' (we will replace this)
 });

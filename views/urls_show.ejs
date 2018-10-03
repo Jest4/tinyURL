@@ -4,11 +4,11 @@
   <title>TinyApp</title>
 </head>
 <header>
-    <% include ./partials/_header %>
+    <% include partials/_header %>
 </header>
 <body>
     <!-- Add your EJS code here -->
 
-  <li><a href="<%=longURL%>">  <%= `${longURL} => ${shortURL}` %></a></li>
+  <li><a href="<%=`/u/${shortURL}`%>">  <%= `${longURL} => ${shortURL}` %></a></li>
 </body>
 </html>
