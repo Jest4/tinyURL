@@ -9,7 +9,7 @@
 <body>
     <!-- Add your EJS code here -->
     <% for (var shortURL in urls) { %>
-  <li><a href="<%=`/urls/${shortURL}`%>"> <%= shortURL %> : <%= urls[shortURL] %></a></li>
+  <li><a href="<%=`/urls/${shortURL}`%>"> <%= shortURL %> : <%= urls[shortURL] %> </a> <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <button type="submit" form="deleteButton" value="Submit">DELETE</button></form></li>
   <% } %>
 </body>
 </html>
