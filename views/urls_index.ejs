@@ -15,7 +15,8 @@
   <th></th>
 </tr>
     <% for (var shortURL in urls) { %>
-  <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL] %></a><td><a href="<%=`/urls/${shortURL}`%>"> EDIT </a><td> <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <button type="submit" form="deleteButton" value="Submit">DELETE</button></form></tr>
+  <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL] %></a><td><a href="<%=`/urls/${shortURL}`%>"> EDIT </a><td>
+    <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <input type="submit" value="Delete" id="deleteButton"></form></tr>
   <% } %>
 </body>
 </html>
