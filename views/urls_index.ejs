@@ -7,9 +7,15 @@
     <% include partials/_header %>
 </header>
 <body>
-    <!-- Add your EJS code here -->
+<table>
+  <caption> URLs </caption>
+  <tr>
+    <th scope="col">Shortened</th>
+  <th scope="col">Full URL</th>
+  <th></th>
+</tr>
     <% for (var shortURL in urls) { %>
-  <li><a href="<%=`/urls/${shortURL}`%>"> <%= shortURL %> : <%= urls[shortURL] %> </a> <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <button type="submit" form="deleteButton" value="Submit">DELETE</button></form></li>
+  <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL] %></a><td><a href="<%=`/urls/${shortURL}`%>"> EDIT </a><td> <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <button type="submit" form="deleteButton" value="Submit">DELETE</button></form></tr>
   <% } %>
 </body>
 </html>
