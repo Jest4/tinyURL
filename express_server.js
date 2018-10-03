@@ -43,10 +43,6 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL]
   res.redirect(longURL);
@@ -65,7 +61,7 @@ app.post("/urls", (req, res) => {
   urlDatabase[newURL] = "http://" + req.body.longURL
 }
   console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
-  res.redirect("urls/" + newURL);         // Respond with 'Ok' (we will replace this)
+  res.redirect("urls/" + newURL);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
@@ -82,13 +78,11 @@ app.post("/urls/:id/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body)
   res.cookie("username", req.body.username)
   res.redirect("/urls/");
 });
 
 app.post("/logout", (req, res) => {
-  console.log(req.body)
   res.clearCookie('username')
   res.redirect("/urls/");
 });
