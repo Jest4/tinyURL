@@ -113,6 +113,9 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   // check if email exists in db
+if ((req.body.email == "") || (req.body.password == "")) {
+  res.status(400).send("Password and Email fields cannot be left blank.")
+}
 if (attemptRegister(req, res) == true) {
   res.status(400).send("That email address has already been used.")
 } else {
