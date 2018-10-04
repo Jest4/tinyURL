@@ -13,6 +13,24 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+var users = {
+  "uid01" : {
+        id : "uid01",
+        email : "user@email.com",
+        password : "passwordo"
+  },
+  "uid01" : {
+        id : "uid02",
+        email : "auser@email.com",
+        password : "123456"
+  },
+  "uid01" : {
+        id : "uid02",
+        email : "buser@email.com",
+        password : "pw123"
+  }
+}
+
 function generateRandomString() {
   let newString = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -55,7 +73,19 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {   username: req.cookies["username"]}
+  res.render("register", templateVars);
+});
+
+app.post("/register", (req, res) => {
+  let newID = generateRandomString()
+  let uid = users.newID
+  uid = {}
+  uid.id = newID
+  uid.email = req.body.email
+  console.log(uid)
+  res.cookie("user_id", newID)
+  res.redirect("/urls/");
 });
 
 app.post("/urls", (req, res) => {

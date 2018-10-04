@@ -12,16 +12,12 @@
   <tr>
     <th scope="col">E-Mail</th>
   <th scope="col">Password</th>
-  <th></th>
 </tr>
-<form>
-   <form action="/register" method="POST" style="margin:150px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    <% for (var shortURL in urls) { %>
-  <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL] %></a><td><a href="<%=`/urls/${shortURL}`%>"> EDIT </a><td>
-    <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <input type="submit" value="Delete" id="deleteButton"></form></tr>
-  <% } %>
+<tr>
+<form method="POST" action="/register" id="register">
+<td><input type="email" id="email" name="email" value="" required /></td>
+<td><input type="password" id="password" name="password" value="" required /></td>
+<td><button type="submit" form="register" value="Submit">Register</button></form></td>
+</tr>
 </body>
 </html>
