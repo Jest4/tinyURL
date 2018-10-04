@@ -89,13 +89,10 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   let newID = generateRandomString()
-  console.log(newID)
   users[newID] = {}
   users[newID].id = newID
   users[newID].email = req.body.email
   res.cookie("user_id", newID)
-  console.log(users)
-  console.log("----- REDIRECT")
   res.redirect("/urls/");
 });
 
@@ -126,14 +123,16 @@ app.post("/urls/:id/", (req, res) => {
 app.post("/login", (req, res) => {
   //check database for email match
   let uid = function() {
-  for (var user in users) {
-    if (users[user].email == req.body.email) {
-      console.log("MATCH FOUND", users[user].id, users[user].email)
-      return users[user].id
+    for (var user in users) {
+      if (users[user].email == req.body.email) {
+        console.log("MATCH FOUND", users[user].id, users[user].email)
+        return uid = users[user].id
+      }
     }
+      res.status(403).send("USER NOT FOUND")
   }
-    console.log("no Match Found")
-}
+  // Check password
+  console.log("UID = ", uid)
   res.cookie("user_id", uid()) // set cookie
   res.redirect("/urls/");
 });
