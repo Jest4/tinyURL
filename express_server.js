@@ -165,7 +165,7 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[shortURL]
   res.redirect("/urls/");
   } else {
-  res.status(401).send("You may not alter that shortcut.")
+  res.status(403).send("You may not alter that shortcut.")
   }
 });
 
@@ -177,7 +177,7 @@ app.post("/urls/:id/", (req, res) => {
   urlDatabase[shortURL].longURL = [longURL]
   res.redirect("/urls/");
   } else {
-  res.status(401).send("You may not alter that shortcut.")
+  res.status(403).send("You may not alter that shortcut.")
   }
 });
 
