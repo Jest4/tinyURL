@@ -41,16 +41,26 @@ function generateRandomString() {
 
 function attemptLogin(req, res) {
   for (var user in users) {
-    let found = 0
+    let found = 0;
     if ((users[user].email == req.body.email) && (req.body.password == users[user].password)) {
       console.log("MATCH FOUND", users[user].id, users[user].email)
-      found = 1
-      return users[user].id
+      found = 1;
+      return users[user].id;
     }
   }
   res.status(403).send("Authentication failed")
   console.log("no match")
-  return null
+  return null;
+}
+
+function attemptRegister(req, res) {
+  //check if email is unique in db
+  for (var user in users) {
+    if (users[user].email == req.body.email) {
+      return true;
+    }
+  }
+  return false;
 }
 
 app.get("/", (req, res) => {
@@ -102,6 +112,11 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  // check if email exists in db
+if (attemptRegister(req, res) == true) {
+  res.status(400).send("That email address has already been used.")
+} else {
+  // if clear
   let newID = generateRandomString()
   users[newID] = {}
   users[newID].id = newID
@@ -109,6 +124,7 @@ app.post("/register", (req, res) => {
   users[newID].password = req.body.password
   res.cookie("user_id", newID)
   res.redirect("/urls/");
+}
 });
 
 app.post("/urls", (req, res) => {
