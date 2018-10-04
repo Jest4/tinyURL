@@ -19,13 +19,13 @@ var users = {
         email : "user@email.com",
         password : "passwordo"
   },
-  "uid01" : {
+  "uid02" : {
         id : "uid02",
         email : "auser@email.com",
         password : "123456"
   },
-  "uid01" : {
-        id : "uid02",
+  "uid03" : {
+        id : "uid03",
         email : "buser@email.com",
         password : "pw123"
   }
@@ -48,17 +48,27 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = {   user_id: req.cookies["user_id"], urls: urlDatabase , };
+  let uid = req.cookies.user_id
+  // console.log("users object", users)
+  // console.log("sqbrkt NOTATION", users[uid])
+  let templateVars = {   user_id: users[req.cookies.user_id], urls: urlDatabase , };
+  // console.log("USERID", uid)
+  console.log(templateVars)
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {   user_id: req.cookies["user_id"]}
+  let templateVars = {   user_id: users[req.cookies.user_id]}
   res.render("urls_new", templateVars);
 });
 
+app.get("/login", (req, res) => {
+  let templateVars = {   user_id: users[req.cookies.user_id]}
+  res.render("login", templateVars);
+});
+
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {  user_id: req.cookies["user_id"], shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
+  let templateVars = {  user_id: users[req.cookies.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 
@@ -68,23 +78,24 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/hello", (req, res) => {
-  let templateVars = {  user_id: req.cookies["user_id"], greeting: 'Hello World!' };
+  let templateVars = {  user_id: users[req.cookies.user_id], greeting: 'Hello World!' };
   res.render("hello_world", templateVars);
 });
 
 app.get("/register", (req, res) => {
-  let templateVars = {   user_id: req.cookies["user_id"]}
+  let templateVars = {   user_id: users[req.cookies.user_id]}
   res.render("register", templateVars);
 });
 
 app.post("/register", (req, res) => {
   let newID = generateRandomString()
-  let uid = users.newID
-  uid = {}
-  uid.id = newID
-  uid.email = req.body.email
-  console.log(uid)
+  console.log(newID)
+  users[newID] = {}
+  users[newID].id = newID
+  users[newID].email = req.body.email
   res.cookie("user_id", newID)
+  console.log(users)
+  console.log("----- REDIRECT")
   res.redirect("/urls/");
 });
 
@@ -113,7 +124,17 @@ app.post("/urls/:id/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.cookie("user_id", req.body.user_id)
+  //check database for email match
+  let uid = function() {
+  for (var user in users) {
+    if (users[user].email == req.body.email) {
+      console.log("MATCH FOUND", users[user].id, users[user].email)
+      return users[user].id
+    }
+  }
+    console.log("no Match Found")
+}
+  res.cookie("user_id", uid()) // set cookie
   res.redirect("/urls/");
 });
 
