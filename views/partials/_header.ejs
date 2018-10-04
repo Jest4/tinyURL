@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
   <h1>zomgthisisaheader</h1>
+  <p>
+   <% if (locals.username) { %>
+    <form method="POST" action="/logout" id="logout" name="logout" type="submit" value="logout">
+      Logged in as: <%= username %>
+    <button type="submit" form="logout" value="Logout">Logout</button></form> </p>
+   <% } else { %>
   <form method="POST" action="/login" id="login"><td>
-   <% if(username != "undefined"){%> <p>Logged in as: <%=username%> </p><% } %>
 <input type="text" id="login" name="username" value="" required />
-<button type="submit" form="login" value="Submit">Login</button></form> <% if(username != "undefined"){ %> <form method="POST" action="/login" id="logout" name="logout" type="submit" value="logout"><button type="submit" form="logout" value="Logout">Logout</button></form><% } %>
+<button type="submit" form="login" value="Submit">Login</button></form> <% }%>
 
 </head>
 <body>
