@@ -9,8 +9,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+   "b2xVn2" : { longURL : "http://www.lighthouselabs.ca", userID: "uid01" },
+   "9sm5xK" : { longURL : "http://www.google.com", userID: "uid03" }
 };
 
 var users = {
@@ -63,6 +63,16 @@ function attemptRegister(req, res) {
   return false;
 }
 
+function urlsForUser(id) {
+  let urls = {}
+  for (let site in urlDatabase) {
+    if (urlDatabase[site].userID == id){
+      urls[site] = urlDatabase[site]
+    }
+  }
+  return urls
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -73,17 +83,24 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let uid = req.cookies.user_id
-  // console.log("users object", users)
-  // console.log("sqbrkt NOTATION", users[uid])
-  let templateVars = {   user_id: users[req.cookies.user_id], urls: urlDatabase , };
-  // console.log("USERID", uid)
-  if (uid != undefined) {console.log("Logged in as", uid)}
+  if (uid != undefined) {
+    console.log("Logged in as", uid)
+
+  let templateVars = {   user_id: users[req.cookies.user_id], urls: urlsForUser(uid) };
   res.render("urls_index", templateVars);
+  } else {
+    res.redirect("/login")
+  }
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {   user_id: users[req.cookies.user_id]}
+  if (req.cookies.user_id != undefined) {
+  let templateVars = {urls: urlDatabase}
   res.render("urls_new", templateVars);
+} else {
+  let templateVars = {   user_id: users[req.cookies.user_id]}
+  res.redirect("/login/")
+}
 });
 
 app.get("/login", (req, res) => {
@@ -92,12 +109,12 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = {  user_id: users[req.cookies.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id] };
+  let templateVars = {  user_id: users[req.cookies.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL };
   res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL]
+  let longURL = urlDatabase[req.params.shortURL].longURL
   res.redirect(longURL);
 });
 
@@ -132,26 +149,36 @@ if (attemptRegister(req, res) == true) {
 
 app.post("/urls", (req, res) => {
   let newURL = generateRandomString()
+  urlDatabase[newURL] = {userID : req.body.email}
   if (req.body.longURL.includes("http://")) {
-  urlDatabase[newURL] = req.body.longURL
-} else {
-  urlDatabase[newURL] = "http://" + req.body.longURL
-}
+    urlDatabase[newURL].longURL = req.body.longURL
+  } else {
+    urlDatabase[newURL].longURL = "http://" + req.body.longURL
+  }
   console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
   res.redirect("urls/" + newURL);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id
+  if (req.cookies.user_id == urlDatabase[shortURL].userID){
   delete urlDatabase[shortURL]
   res.redirect("/urls/");
+  } else {
+  res.status(401).send("You may not alter that shortcut.")
+  }
 });
 
 app.post("/urls/:id/", (req, res) => {
   let longURL = req.body.longURL
   let shortURL = req.params.id
-  urlDatabase[shortURL] = [longURL]
+  // debug console.log("ShortURL =", shortURL, "LongURL =", longURL, "Logged in =", req.cookies.user_id, "Link Owner =", urlDatabase[shortURL].userID)
+  if (req.cookies.user_id == urlDatabase[shortURL].userID){
+  urlDatabase[shortURL].longURL = [longURL]
   res.redirect("/urls/");
+  } else {
+  res.status(401).send("You may not alter that shortcut.")
+  }
 });
 
 app.post("/login", (req, res) => {
