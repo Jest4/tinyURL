@@ -39,6 +39,20 @@ function generateRandomString() {
   return newString;
 }
 
+function attemptLogin(req, res) {
+  for (var user in users) {
+    let found = 0
+    if ((users[user].email == req.body.email) && (req.body.password == users[user].password)) {
+      console.log("MATCH FOUND", users[user].id, users[user].email)
+      found = 1
+      return users[user].id
+    }
+  }
+  res.status(403).send("Authentication failed")
+  console.log("no match")
+  return null
+}
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -53,7 +67,7 @@ app.get("/urls", (req, res) => {
   // console.log("sqbrkt NOTATION", users[uid])
   let templateVars = {   user_id: users[req.cookies.user_id], urls: urlDatabase , };
   // console.log("USERID", uid)
-  console.log(templateVars)
+  if (uid != undefined) {console.log("Logged in as", uid)}
   res.render("urls_index", templateVars);
 });
 
@@ -92,6 +106,7 @@ app.post("/register", (req, res) => {
   users[newID] = {}
   users[newID].id = newID
   users[newID].email = req.body.email
+  users[newID].password = req.body.password
   res.cookie("user_id", newID)
   res.redirect("/urls/");
 });
@@ -122,19 +137,12 @@ app.post("/urls/:id/", (req, res) => {
 
 app.post("/login", (req, res) => {
   //check database for email match
-  let uid = function() {
-    for (var user in users) {
-      if (users[user].email == req.body.email) {
-        console.log("MATCH FOUND", users[user].id, users[user].email)
-        return uid = users[user].id
-      }
-    }
-      res.status(403).send("USER NOT FOUND")
-  }
-  // Check password
-  console.log("UID = ", uid)
-  res.cookie("user_id", uid()) // set cookie
+  let uid = attemptLogin(req, res)
+  // set cookie if login successful
+  if (uid != null) {
+  res.cookie("user_id", uid)
   res.redirect("/urls/");
+  }
 });
 
 app.post("/logout", (req, res) => {
