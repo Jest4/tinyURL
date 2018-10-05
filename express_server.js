@@ -173,7 +173,7 @@ app.post("/urls", (req, res) => {
   res.redirect("urls/" + newURL);
 });
 
-app.delete("/urls/:id?", (req, res) => {
+app.delete("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   if (req.session.user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
