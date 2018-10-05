@@ -14,6 +14,7 @@
   <th scope="col">Full URL</th>
   <th></th>
 </tr>
+<% console.log(urls) %>
     <% for (var shortURL in urls) { %>
   <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL].longURL %></a><td><a href="<%=`/urls/${shortURL}`%>"> EDIT </a><td>
     <form method="POST" action="/urls/<%=`${shortURL}`%>/delete" id="deleteButton"> <input type="submit" value="Delete" id="deleteButton"></form></tr>
