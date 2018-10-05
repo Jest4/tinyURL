@@ -73,7 +73,7 @@ function attemptRegister(req) {
 function urlsForUser(id) {
   let urls = {};
   for (let site in urlDatabase) {
-    if (urlDatabase[site].userID == id){
+    if (urlDatabase[site].userID == id) {
       urls[site] = urlDatabase[site];
     }
   }
@@ -91,10 +91,9 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   let uid = req.session.user_id;
   if (uid !== undefined) {
-    console.log("Logged in as", uid);
-
-  let templateVars = {   user_id: users[req.session.user_id], urls: urlsForUser(uid) };
-  res.render("urls_index", templateVars);
+    // console.log("Logged in as", uid);
+    let templateVars = {   user_id: users[req.session.user_id], urls: urlsForUser(uid) };
+    res.render("urls_index", templateVars);
   } else {
     res.redirect("/login");
   }
@@ -102,11 +101,11 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   if (req.session.user_id !== undefined) {
-  let templateVars = {urls: urlDatabase};
-  res.render("urls_new", templateVars);
-} else {
-  res.redirect("/login/");
-}
+    let templateVars = {urls: urlDatabase};
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login/");
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -118,10 +117,10 @@ app.get("/urls/:id", (req, res) => {
   let longURL = req.body.longURL;
   let shortURL = req.params.id;
   let templateVars = {  user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL };
-    if (req.session.user_id == urlDatabase[shortURL].userID){
-  res.render("urls_show", templateVars);
+  if (req.session.user_id == urlDatabase[shortURL].userID) {
+    res.render("urls_show", templateVars);
   } else {
-  res.status(403).send("You are not authorized to alter that shortcut.");
+    res.status(403).send("You are not authorized to alter that shortcut.");
   }
 });
 
@@ -142,21 +141,21 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   // check if email exists in db
-if ((req.body.email === "") || (req.body.password === "")) {
-  res.status(400).send("Password and Email fields cannot be left blank.");
-}
-if (attemptRegister(req, res) === true) {
-  res.status(400).send("That email address has already been used.");
-} else {
-  // if clear
-  let newID = generateRandomString();
-  users[newID] = {};
-  users[newID].id = newID;
-  users[newID].email = req.body.email;
-  users[newID].password = bcrypt.hashSync(req.body.password, 15);
-  req.session.user_id = newID;
-  res.redirect("/urls/");
-}
+  if ((req.body.email === "") || (req.body.password === "")) {
+    res.status(400).send("Password and Email fields cannot be left blank.");
+  }
+  if (attemptRegister(req, res) === true) {
+    res.status(400).send("That email address has already been used.");
+  } else {
+    // if clear
+    let newID = generateRandomString();
+    users[newID] = {};
+    users[newID].id = newID;
+    users[newID].email = req.body.email;
+    users[newID].password = bcrypt.hashSync(req.body.password, 15);
+    req.session.user_id = newID;
+    res.redirect("/urls/");
+  }
 });
 
 app.post("/urls", (req, res) => {
@@ -167,20 +166,20 @@ app.post("/urls", (req, res) => {
   } else {
     urlDatabase[newURL].longURL = "http://" + req.body.longURL;
   }
-  console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
-  console.log(urlDatabase[newURL])
-  console.log("COOKIE = ", req.session.user_id)
-  console.log(urlDatabase)
+  // console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
+  // console.log(urlDatabase[newURL])
+  // console.log("COOKIE = ", req.session.user_id)
+  // console.log(urlDatabase)
   res.redirect("urls/" + newURL);
 });
 
 app.post("/urls/:id/delete", (req, res) => {
   let shortURL = req.params.id;
-  if (req.session.user_id == urlDatabase[shortURL].userID){
-  delete urlDatabase[shortURL];
-  res.redirect("/urls/");
+  if (req.session.user_id == urlDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls/");
   } else {
-  res.status(403).send("You may not alter that shortcut.");
+    res.status(403).send("You may not alter that shortcut.");
   }
 });
 
@@ -188,11 +187,11 @@ app.post("/urls/:id/", (req, res) => {
   let longURL = req.body.longURL;
   let shortURL = req.params.id;
   // debug console.log("ShortURL =", shortURL, "LongURL =", longURL, "Logged in =", req.session.user_id, "Link Owner =", urlDatabase[shortURL].userID)
-  if (req.session.user_id == urlDatabase[shortURL].userID){
-  urlDatabase[shortURL].longURL = [longURL];
-  res.redirect("/urls/");
+  if (req.session.user_id == urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL].longURL = [longURL];
+    res.redirect("/urls/");
   } else {
-  res.status(403).send("You may not alter that shortcut.");
+    res.status(403).send("You may not alter that shortcut.");
   }
 });
 
@@ -201,8 +200,8 @@ app.post("/login", (req, res) => {
   let uid = attemptLogin(req, res);
   // set cookie if login successful
   if (uid !== null) {
-  req.session.user_id = uid;
-  res.redirect("/urls/");
+    req.session.user_id = uid;
+    res.redirect("/urls/");
   }
 });
 
@@ -212,5 +211,5 @@ app.post("/logout", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
