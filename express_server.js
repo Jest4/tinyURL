@@ -129,6 +129,7 @@ app.get("/urls/:id", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[req.params.shortURL].longURL;
+  // analytics -- checking for/setting vistor cookie & adding to appropriate counters
   if (!req.session.visitor_ID) {
     req.session.visitor_ID = generateRandomString();
   }
@@ -143,11 +144,6 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-// app.get("/hello", (req, res) => {
-//   let templateVars = {user_id: users[req.session.user_id], greeting: 'Hello World!'};
-//   res.render("hello_world", templateVars);
-// });
-
 app.get("/register", (req, res) => {
   let templateVars = {user_id: users[req.session.user_id]};
   res.render("register", templateVars);
@@ -161,7 +157,7 @@ app.post("/register", (req, res) => {
   if (attemptRegister(req, res) === true) {
     res.status(400).send("That email address has already been used.");
   } else {
-    // if clear
+    // if clear -- register a new user
     let newID = generateRandomString();
     users[newID] = {};
     users[newID].id = newID;
@@ -174,6 +170,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  // Create New Link
   let newURL = generateRandomString();
   urlDatabase[newURL] = {userID : req.session.user_id, count : 0, uCount : 0, viewed: {}};
   if (req.body.longURL.includes("http://")) {
@@ -196,9 +193,9 @@ app.delete("/urls/:id", (req, res) => {
 });
 
 app.put("/urls/:id/", (req, res) => {
+  // Edit Link
   let longURL = req.body.longURL;
   let shortURL = req.params.id;
-  // debug console.log("ShortURL =", shortURL, "LongURL =", longURL, "Logged in =", req.session.user_id, "Link Owner =", urlDatabase[shortURL].userID)
   if (req.session.user_id === urlDatabase[shortURL].userID) {
     urlDatabase[shortURL].longURL = [longURL];
     res.redirect("/urls/");
