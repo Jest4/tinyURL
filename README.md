@@ -10,7 +10,7 @@ It is a link shortener featuring:
 Default Usage:
 
 List of user's links:
-HTTP://localhost:8080/urls
+http://localhost:8080/urls
 
 New URL:
 .../urls/new
