@@ -16,7 +16,12 @@
 </tr>
     <% for (var shortURL in urls) { %>
   <tr> <th scope="row"><a href="<%=`/urls/${shortURL}`%>"><%= shortURL %> </a><td><a href="<%=`/u/${shortURL}`%>"> <%= urls[shortURL].longURL %></a><td><a href="<%=`/urls/${shortURL}`%>"><button type="button"> EDIT </button></a><td>
-    <form method="POST" action="/urls/<%=`${shortURL}`%>?_method=DELETE"" id="deleteButton"> <input type="submit" value="DELETE" id="deleteButton"></form></tr>
+    <form method="POST" action="/urls/<%=`${shortURL}`%>?_method=DELETE"" id="deleteButton"> <input type="submit" value="DELETE" id="deleteButton"> </td><td> Visits: <%= urls[shortURL].count %>, Visitors: <%= urls[shortURL].uCount %>, Created: <%= urls[shortURL].created %></form></tr>
   <% } %>
+</table>
+<br>
+<br>
+<br>
+<a href="/urls/new">[ New Link ]</a> </p>
 </body>
 </html>

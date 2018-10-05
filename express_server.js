@@ -17,8 +17,8 @@ app.use(cookieSession({
 app.use(methodOverride('_method'));
 
 var urlDatabase = {
-  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", count: 0, uCount: 0, viewed: {}},
-  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03", count: 0, uCount: 0, viewed: {}}
+  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", created: 'Before Time Existed', count: 0, uCount: 0, viewed: {}},
+  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03", created: 'Before Time Existed', count: 0, uCount: 0, viewed: {}}
 };
 
 var users = {
@@ -118,11 +118,15 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, dbInfo: urlDatabase[req.params.id]};
-  if (req.session.user_id == urlDatabase[shortURL].userID) {
-    res.render("urls_show", templateVars);
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404).send(" ERROR 404 : That page does not exist.")
   } else {
-    res.status(403).send("You are not authorized to alter that shortcut.");
+    let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, dbInfo: urlDatabase[req.params.id]};
+    if (req.session.user_id == urlDatabase[shortURL].userID) {
+      res.render("urls_show", templateVars);
+    } else {
+      res.status(403).send("You are not authorized to alter that shortcut.");
+    }
   }
 });
 
@@ -172,7 +176,7 @@ app.post("/register", (req, res) => {
 app.post("/urls", (req, res) => {
   // Create New Link
   let newURL = generateRandomString();
-  urlDatabase[newURL] = {userID : req.session.user_id, count : 0, uCount : 0, viewed: {}};
+  urlDatabase[newURL] = {userID : req.session.user_id, created: new Date(), count : 0, uCount : 0, viewed: {}};
   if (req.body.longURL.includes("http://")) {
     urlDatabase[newURL].longURL = req.body.longURL;
   } else {
@@ -184,11 +188,17 @@ app.post("/urls", (req, res) => {
 
 app.delete("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  if (req.session.user_id === urlDatabase[shortURL].userID) {
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404).send(" ERROR 404 : That page does not exist.")
+  } else if (req.session.user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
     res.redirect("/urls/");
   } else {
-    res.status(403).send("You may not alter that shortcut.");
+    if (req.session.user_id === undefined) {
+      res.status(403).send("Please Login first.");
+    } else {
+      res.status(403).send("You may not alter another User's shortcuts.");
+    }
   }
 });
 
