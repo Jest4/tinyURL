@@ -119,7 +119,7 @@ app.get("/login", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   if (urlDatabase[shortURL] === undefined) {
-    res.status(404).send(" ERROR 404 : That page does not exist.")
+    res.status(404).send(" ERROR 404 : That page does not exist.");
   } else {
     let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, dbInfo: urlDatabase[req.params.id]};
     if (req.session.user_id == urlDatabase[shortURL].userID) {
@@ -148,7 +148,7 @@ app.get("/u/:shortURL", (req, res) => {
     urlDatabase[shortURL].count++;
     res.redirect(longURL);
   } else {
-    res.status(404).send(" ERROR 404 : That shortcut does not exist.")
+    res.status(404).send(" ERROR 404 : That shortcut does not exist.");
   }
 });
 
@@ -178,22 +178,28 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  // Check user_id
+  let uid = req.session.user_id;
+  if (users[uid]) {
   // Create New Link
-  let newURL = generateRandomString();
-  urlDatabase[newURL] = {userID : req.session.user_id, created: new Date(), count : 0, uCount : 0, viewed: {}};
-  if (req.body.longURL.includes("http://")) {
-    urlDatabase[newURL].longURL = req.body.longURL;
-  } else {
-    urlDatabase[newURL].longURL = "http://" + req.body.longURL;
+    let newURL = generateRandomString();
+    urlDatabase[newURL] = {userID : req.session.user_id, created: new Date(), count : 0, uCount : 0, viewed: {}};
+    if (req.body.longURL.includes("http://")) {
+      urlDatabase[newURL].longURL = req.body.longURL;
+    } else {
+      urlDatabase[newURL].longURL = "http://" + req.body.longURL;
+    }
+    console.log("new Link", newURL, urlDatabase[newURL]);
+    res.redirect("urls/" + newURL);
+    } else {
+    res.status(403).send("Please Login first.");
   }
-  console.log("new Link", newURL, urlDatabase[newURL]);
-  res.redirect("urls/" + newURL);
 });
 
 app.delete("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   if (urlDatabase[shortURL] === undefined) {
-    res.status(404).send(" ERROR 404 : That page does not exist.")
+    res.status(404).send(" ERROR 404 : That page does not exist.");
   } else if (req.session.user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
     res.redirect("/urls/");
