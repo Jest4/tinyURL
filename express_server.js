@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
   name: 'session',
   keys: ["el secreto en espanglish"],
-
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
@@ -116,8 +115,15 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+  let longURL = req.body.longURL
+  let shortURL = req.params.id
   let templateVars = {  user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL };
+    if (req.session.user_id == urlDatabase[shortURL].userID){
+  urlDatabase[shortURL].longURL = [longURL]
   res.render("urls_show", templateVars);
+  } else {
+  res.status(403).send("You are not authorized to alter that shortcut.")
+  }
 });
 
 app.get("/u/:shortURL", (req, res) => {
