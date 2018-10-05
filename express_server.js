@@ -112,8 +112,13 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  let uid = req.session.user_id;
   let templateVars = {user_id: users[req.session.user_id]};
-  res.render("login", templateVars);
+  if (users[uid]) {
+    res.redirect("/urls/");
+  } else {
+    res.render("login", templateVars);
+  }
 });
 
 app.get("/urls/:id", (req, res) => {
