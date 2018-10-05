@@ -45,7 +45,7 @@ function generateRandomString() {
     newString += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   if ((users[newString]) || (urlDatabase[newString])) {
-    generateRandomString()
+    generateRandomString();
   } else {
     return newString;
   }
@@ -59,7 +59,6 @@ function attemptLogin(req, res) {
     }
   }
   res.status(403).send("Authentication failed");
-  console.log("no match");
   return null;
 }
 
@@ -116,7 +115,6 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let longURL = req.body.longURL;
   let shortURL = req.params.id;
   let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL};
   if (req.session.user_id == urlDatabase[shortURL].userID) {
@@ -156,7 +154,7 @@ app.post("/register", (req, res) => {
     users[newID].email = req.body.email;
     users[newID].password = bcrypt.hashSync(req.body.password, 15);
     req.session.user_id = newID;
-    console.log("New User", users[newID])
+    console.log("New User ", users[newID])
     res.redirect("/urls/");
   }
 });
@@ -169,9 +167,6 @@ app.post("/urls", (req, res) => {
   } else {
     urlDatabase[newURL].longURL = "http://" + req.body.longURL;
   }
-  // console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
-  // console.log("COOKIE = ", req.session.user_id)
-  // console.log(urlDatabase)
   console.log("new Link", newURL, urlDatabase[newURL])
   res.redirect("urls/" + newURL);
 });
