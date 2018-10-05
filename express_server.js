@@ -158,8 +158,13 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  let uid = req.session.user_id;
   let templateVars = {user_id: users[req.session.user_id]};
-  res.render("register", templateVars);
+  if (users[uid]) {
+    res.redirect("/urls/");
+  } else {
+    res.render("register", templateVars);
+  }
 });
 
 app.post("/register", (req, res) => {
