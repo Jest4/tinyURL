@@ -17,8 +17,8 @@ app.use(cookieSession({
 app.use(methodOverride('_method'))
 
 var urlDatabase = {
-  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01"},
-  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03"}
+  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", count: 0},
+  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03", count: 0}
 };
 
 var users = {
@@ -118,7 +118,7 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL};
+  let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, count: urlDatabase[req.params.id].count};
   if (req.session.user_id == urlDatabase[shortURL].userID) {
     res.render("urls_show", templateVars);
   } else {
@@ -128,6 +128,7 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL].longURL;
+  urlDatabase[req.params.shortURL].count++
   res.redirect(longURL);
 });
 
