@@ -53,10 +53,8 @@ function generateRandomString() {
 
 function attemptLogin(req, res) {
   for (var user in users) {
-    let found = 0;
     if ((users[user].email == req.body.email) && (bcrypt.compareSync(req.body.password, users[user].password))) {
-      console.log("MATCH FOUND", users[user].id, users[user].email);
-      found = 1;
+      console.log("Successful login: ", users[user].id, users[user].email);
       return users[user].id;
     }
   }
