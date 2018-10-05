@@ -4,6 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
+const methodOverride = require('method-override')
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,6 +14,7 @@ app.use(cookieSession({
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
+app.use(methodOverride('_method'))
 
 var urlDatabase = {
   "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01"},
@@ -171,7 +173,7 @@ app.post("/urls", (req, res) => {
   res.redirect("urls/" + newURL);
 });
 
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id?", (req, res) => {
   let shortURL = req.params.id;
   if (req.session.user_id === urlDatabase[shortURL].userID) {
     delete urlDatabase[shortURL];
