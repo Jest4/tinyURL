@@ -132,20 +132,24 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[req.params.shortURL].longURL;
-  // analytics -- checking for/setting vistor cookie & adding to appropriate counters
-  if (!req.session.visitor_ID) {
-    req.session.visitor_ID = generateRandomString();
-  }
-  let vid = req.session.visitor_ID;
-  if (!urlDatabase[shortURL].viewed[vid]) {
-    urlDatabase[shortURL].uCount++;
-    urlDatabase[shortURL].viewed[vid] = [new Date()];
+  if (urlDatabase[req.params.shortURL]) {
+    let longURL = urlDatabase[req.params.shortURL].longURL;
+    // analytics -- checking for/setting vistor cookie & adding to appropriate counters
+    if (!req.session.visitor_ID) {
+      req.session.visitor_ID = generateRandomString();
+    }
+    let vid = req.session.visitor_ID;
+    if (!urlDatabase[shortURL].viewed[vid]) {
+      urlDatabase[shortURL].uCount++;
+      urlDatabase[shortURL].viewed[vid] = [new Date()];
+    } else {
+      urlDatabase[shortURL].viewed[vid].push(new Date());
+    }
+    urlDatabase[shortURL].count++;
+    res.redirect(longURL);
   } else {
-    urlDatabase[shortURL].viewed[vid].push(new Date());
+    res.status(404).send(" ERROR 404 : That shortcut does not exist.")
   }
-  urlDatabase[shortURL].count++;
-  res.redirect(longURL);
 });
 
 app.get("/register", (req, res) => {
