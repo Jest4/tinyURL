@@ -16,8 +16,16 @@
 <tr><td><td><a href="/urls">return to your URL index</a></tr></td></td>
 <br>
 </table>
-<p>This shortcut has been used <b><%=count%></b> times.
-
+<p>This shortcut has been used <b><%=dbInfo.count%></b> times,
+<br>by <b><%=dbInfo.uCount%></b> unique visitors.
+<br>
+<br>
+<br>
+Viewed by:
+<% for (var user in dbInfo.viewed) {%>
+<br>
+<%= ` User: ${user} on`%> <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <%= dbInfo.viewed[user]%>
+<% } %>
 
 </body>
 </html>

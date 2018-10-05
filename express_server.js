@@ -17,8 +17,8 @@ app.use(cookieSession({
 app.use(methodOverride('_method'))
 
 var urlDatabase = {
-  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", count: 0},
-  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03", count: 0}
+  "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", count: 0, uCount: 0, viewed: {}},
+  "9sm5xK" : {longURL : "http://www.google.com", userID: "uid03", count: 0, uCount: 0, viewed: {}}
 };
 
 var users = {
@@ -118,7 +118,7 @@ app.get("/login", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, count: urlDatabase[req.params.id].count};
+  let templateVars = {user_id: users[req.session.user_id], shortURL: req.params.id, longURL: urlDatabase[req.params.id].longURL, dbInfo: urlDatabase[req.params.id]};
   if (req.session.user_id == urlDatabase[shortURL].userID) {
     res.render("urls_show", templateVars);
   } else {
@@ -127,8 +127,19 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
+  let shortURL = req.params.shortURL
   let longURL = urlDatabase[req.params.shortURL].longURL;
-  urlDatabase[req.params.shortURL].count++
+  if (!req.session.visitor_ID) {
+    req.session.visitor_ID = generateRandomString()
+  }
+  let vid = req.session.visitor_ID
+  if (!urlDatabase[shortURL].viewed[vid]) {
+    urlDatabase[shortURL].uCount++
+    urlDatabase[shortURL].viewed[vid] = [new Date()]
+  } else {
+  urlDatabase[shortURL].viewed[vid].push(new Date())
+  }
+  urlDatabase[shortURL].count++
   res.redirect(longURL);
 });
 
@@ -164,7 +175,7 @@ app.post("/register", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let newURL = generateRandomString();
-  urlDatabase[newURL] = {userID : req.session.user_id};
+  urlDatabase[newURL] = {userID : req.session.user_id, count : 0, uCount : 0, viewed: {}};
   if (req.body.longURL.includes("http://")) {
     urlDatabase[newURL].longURL = req.body.longURL;
   } else {
