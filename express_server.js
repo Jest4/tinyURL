@@ -1,8 +1,9 @@
-var express = require("express");
-var app = express();
-var PORT = 8080; // default port 8080
+const express = require("express");
+const app = express();
+const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
+const bcrypt = require('bcrypt');
 
 app.set("view engine", "ejs")
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,17 +18,17 @@ var users = {
   "uid01" : {
         id : "uid01",
         email : "user@email.com",
-        password : "passwordo"
+        password : "$2b$15$11HlRIyMZVNlnSFJ9DllyOYrd.d5P0wx39VTu952ZsPfcj5gN/y.y"
   },
   "uid02" : {
         id : "uid02",
         email : "auser@email.com",
-        password : "123456"
+        password : "$2b$15$RhCQX/77p/apEDD13EBJ9uoJTQV8YaAPn7ci74ExOSw6/0ZubNyju"
   },
   "uid03" : {
         id : "uid03",
         email : "buser@email.com",
-        password : "pw123"
+        password : "$2b$15$kOu8PK/nBXuOFcHeKDa0E.TmYk0v98SkwdOZxNensnJ0JdvoUTCbe"
   }
 }
 
@@ -42,7 +43,7 @@ function generateRandomString() {
 function attemptLogin(req, res) {
   for (var user in users) {
     let found = 0;
-    if ((users[user].email == req.body.email) && (req.body.password == users[user].password)) {
+    if ((users[user].email == req.body.email) && (bcrypt.compareSync(req.body.password, users[user].password))) {
       console.log("MATCH FOUND", users[user].id, users[user].email)
       found = 1;
       return users[user].id;
@@ -141,7 +142,7 @@ if (attemptRegister(req, res) == true) {
   users[newID] = {}
   users[newID].id = newID
   users[newID].email = req.body.email
-  users[newID].password = req.body.password
+  users[newID].password = bcrypt.hashSync(req.body.password, 15)
   res.cookie("user_id", newID)
   res.redirect("/urls/");
 }
