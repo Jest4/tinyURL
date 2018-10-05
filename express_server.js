@@ -4,7 +4,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -14,7 +14,7 @@ app.use(cookieSession({
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method'));
 
 var urlDatabase = {
   "b2xVn2" : {longURL : "http://www.lighthouselabs.ca", userID: "uid01", count: 0, uCount: 0, viewed: {}},
@@ -127,19 +127,19 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let shortURL = req.params.shortURL
+  let shortURL = req.params.shortURL;
   let longURL = urlDatabase[req.params.shortURL].longURL;
   if (!req.session.visitor_ID) {
-    req.session.visitor_ID = generateRandomString()
+    req.session.visitor_ID = generateRandomString();
   }
-  let vid = req.session.visitor_ID
+  let vid = req.session.visitor_ID;
   if (!urlDatabase[shortURL].viewed[vid]) {
-    urlDatabase[shortURL].uCount++
-    urlDatabase[shortURL].viewed[vid] = [new Date()]
+    urlDatabase[shortURL].uCount++;
+    urlDatabase[shortURL].viewed[vid] = [new Date()];
   } else {
-  urlDatabase[shortURL].viewed[vid].push(new Date())
+    urlDatabase[shortURL].viewed[vid].push(new Date());
   }
-  urlDatabase[shortURL].count++
+  urlDatabase[shortURL].count++;
   res.redirect(longURL);
 });
 
@@ -168,7 +168,7 @@ app.post("/register", (req, res) => {
     users[newID].email = req.body.email;
     users[newID].password = bcrypt.hashSync(req.body.password, 15);
     req.session.user_id = newID;
-    console.log("New User ", users[newID])
+    console.log("New User ", users[newID]);
     res.redirect("/urls/");
   }
 });
@@ -181,7 +181,7 @@ app.post("/urls", (req, res) => {
   } else {
     urlDatabase[newURL].longURL = "http://" + req.body.longURL;
   }
-  console.log("new Link", newURL, urlDatabase[newURL])
+  console.log("new Link", newURL, urlDatabase[newURL]);
   res.redirect("urls/" + newURL);
 });
 
