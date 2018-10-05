@@ -44,7 +44,7 @@ function generateRandomString() {
   for (var i = 0; i < 6; i++) {
     newString += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-  if ((users[newID]) || (urlDatabase[newID])) {
+  if ((users[newString]) || (urlDatabase[newString])) {
     generateRandomString()
   } else {
     return newString;
@@ -95,7 +95,7 @@ app.get("/urls.json", (req, res) => {
 
 app.get("/urls", (req, res) => {
   let uid = req.session.user_id;
-  if (uid !== undefined) {
+  if (users[uid]) {
     // console.log("Logged in as", uid);
     let templateVars = {   user_id: users[req.session.user_id], urls: urlsForUser(uid) };
     res.render("urls_index", templateVars);
@@ -105,7 +105,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  if (req.session.user_id !== undefined) {
+  if (users[req.session.user_id]) {
     let templateVars = {urls: urlDatabase};
     res.render("urls_new", templateVars);
   } else {
@@ -145,10 +145,10 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  // check if email exists in db
   if ((req.body.email === "") || (req.body.password === "")) {
     res.status(400).send("Password and Email fields cannot be left blank.");
   }
+  // check if email exists in db
   if (attemptRegister(req, res) === true) {
     res.status(400).send("That email address has already been used.");
   } else {
@@ -159,6 +159,7 @@ app.post("/register", (req, res) => {
     users[newID].email = req.body.email;
     users[newID].password = bcrypt.hashSync(req.body.password, 15);
     req.session.user_id = newID;
+    console.log("New User", users[newID])
     res.redirect("/urls/");
   }
 });
@@ -172,9 +173,9 @@ app.post("/urls", (req, res) => {
     urlDatabase[newURL].longURL = "http://" + req.body.longURL;
   }
   // console.log("created", newURL, ": ", req.body.longURL);  // debug statement to see POST parameters
-  // console.log(urlDatabase[newURL])
   // console.log("COOKIE = ", req.session.user_id)
   // console.log(urlDatabase)
+  console.log("new Link", newURL, urlDatabase[newURL])
   res.redirect("urls/" + newURL);
 });
 
