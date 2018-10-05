@@ -37,13 +37,18 @@ var users = {
   }
 };
 
+//creates strings for user IDs and shortened links
 function generateRandomString() {
   let newString = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (var i = 0; i < 6; i++) {
     newString += possible.charAt(Math.floor(Math.random() * possible.length));
   }
-  return newString;
+  if ((users[newID]) || (urlDatabase[newID])) {
+    generateRandomString()
+  } else {
+    return newString;
+  }
 }
 
 function attemptLogin(req, res) {
