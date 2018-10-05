@@ -10,7 +10,7 @@
     <!-- Add your EJS code here -->
 <table>
 <tr><td><td>URL edit mode</tr></td></td>
-  <th scope="row"><a href="<%=`/u/${shortURL}`%>">  <%= `${shortURL}` %></a></th> <form method="POST" action="/urls/<%=`${shortURL}`%>/" id="modifyButton"><td>
+  <th scope="row"><a href="<%=`/u/${shortURL}`%>">  <%= `${shortURL}` %></a></th> <form method="POST" action="/urls/<%=`${shortURL}`%>?_method=PUT" id="modifyButton"><td>
 <input type="text" id="longURL" name="longURL" value="<%= `${longURL}` %>" required />
 <button type="submit" form="modifyButton" value="Submit">Update</button></form></td>
 <tr><td><td><a href="/urls">return to your URL index</a></tr></td></td>

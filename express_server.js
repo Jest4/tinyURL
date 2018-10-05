@@ -183,7 +183,7 @@ app.delete("/urls/:id", (req, res) => {
   }
 });
 
-app.post("/urls/:id/", (req, res) => {
+app.put("/urls/:id/", (req, res) => {
   let longURL = req.body.longURL;
   let shortURL = req.params.id;
   // debug console.log("ShortURL =", shortURL, "LongURL =", longURL, "Logged in =", req.session.user_id, "Link Owner =", urlDatabase[shortURL].userID)
