@@ -81,7 +81,7 @@ function urlsForUser(id) {
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/urls");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -129,10 +129,10 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.get("/hello", (req, res) => {
-  let templateVars = {  user_id: users[req.session.user_id], greeting: 'Hello World!' };
-  res.render("hello_world", templateVars);
-});
+// app.get("/hello", (req, res) => {
+//   let templateVars = {  user_id: users[req.session.user_id], greeting: 'Hello World!' };
+//   res.render("hello_world", templateVars);
+// });
 
 app.get("/register", (req, res) => {
   let templateVars = {   user_id: users[req.session.user_id]};
