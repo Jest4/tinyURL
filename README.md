@@ -1,7 +1,7 @@
 # TinyApp Project
  TinyApp is a full-stack  web application built with Node and Express that allows users to shorten long URLs (a la bit.ly).
 
-## Final Product
+## "Final Product"
 Login Page:
 ![image](https://user-images.githubusercontent.com/42853487/46564776-964db900-c8d7-11e8-98c5-421e70b7baca.png)
 
@@ -27,7 +27,7 @@ Shortcut edit page
 - Install all dependencies (using the `npm install` command).
 - Run the development web server using the `node express_server.js` command.
 
-==============================================================================
+=======================================
 
 Default Usage:
 
@@ -50,3 +50,15 @@ Login Page:
 
 Registration Page:
 /register
+
+=======================================
+
+TinyApp is a Lighthouse Labs bootcamp project.
+It is a link shortener featuring:
+
+-login credentials
+-hashed passwords
+-session cookies
+-method override to allow PUT and DELETE requests
+
+(BUT NOT HTTPS)
